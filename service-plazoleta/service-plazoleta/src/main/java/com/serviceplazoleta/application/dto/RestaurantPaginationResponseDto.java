@@ -8,5 +8,5 @@ import lombok.Setter;
 public class RestaurantPaginationResponseDto {
 
     private String name;
-    private String urlLogo;
+    private String logoUrl;
 }

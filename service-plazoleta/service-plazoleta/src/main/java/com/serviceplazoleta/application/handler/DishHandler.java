@@ -18,15 +18,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class DishHandler implements IDishHandler{
+public class DishHandler implements IDishHandler {
 
     private final IDishServicePort dishServicePort;
     private final IDishRequestMapper dishRequestMapper;
     private final IDishResponseMapper dishResponseMapper;
+
     @Override
-    public void saveDish(DishRequestDto dishRequestDto, Long restaurantId,HttpServletRequest request) {
+    public void saveDish(DishRequestDto dishRequestDto, Long restaurantId, HttpServletRequest request) {
         Dish dish = dishRequestMapper.toDish(dishRequestDto);
-        dishServicePort.saveDish(dish,restaurantId,request);
+        dishServicePort.saveDish(dish, restaurantId, request);
     }
 
     @Override
@@ -38,22 +39,27 @@ public class DishHandler implements IDishHandler{
     @Override
     public void updateDish(Long id, DishUpdateRequestDto dishUpdateRequestDto, Long restaurantId, HttpServletRequest request, Long propietarioId) {
         Dish dish = dishRequestMapper.toDishUpdate(dishUpdateRequestDto);
-        dishServicePort.updateDish(id,dish,restaurantId,request,propietarioId);
+        dishServicePort.updateDish(id, dish, restaurantId, request, propietarioId);
     }
 
     @Override
     public List<DishResponseDto> getAllDishes() {
         List<Dish> dishList = dishServicePort.getAllDish();
-        if (dishList.isEmpty()){
+        if (dishList.isEmpty()) {
             throw new NoDataFoundException();
         }
         return dishResponseMapper.toResponseList(dishList);
     }
 
     @Override
-    public List<DishResponseDto> findAllByRestaurantId(Long idRestaurant, Integer page, Integer size) {
-        List<Dish> dishList = dishServicePort.findAllByRestaurantId(idRestaurant,page,size);
-        if (dishList.isEmpty()){
+    public List<DishResponseDto> findAllByRestaurantId(
+        Long idRestaurant,
+        Integer page,
+        Integer size,
+        String category
+    ) {
+        List<Dish> dishList = dishServicePort.findAllByRestaurantId(idRestaurant, page, size, category);
+        if (dishList.isEmpty()) {
             throw new NoDataFoundException();
         }
         return dishResponseMapper.toResponseList(dishList);
@@ -61,14 +67,14 @@ public class DishHandler implements IDishHandler{
 
     @Override
     public void enableDisableDish(Long id, Long flag) {
-        dishServicePort.enableDisableDish(id,flag);
+        dishServicePort.enableDisableDish(id, flag);
     }
 
 
     @Override
     public void validateAccess(Long userId, String requiredRole, String token) throws Exception {
-        Boolean hasValidAcces = dishServicePort.validateAccess(userId,requiredRole,token);
-        if (!hasValidAcces){
+        Boolean hasValidAccess = dishServicePort.validateAccess(userId, requiredRole, token);
+        if (!hasValidAccess) {
             throw new Exception("User has no access to this resource.");
         }
     }

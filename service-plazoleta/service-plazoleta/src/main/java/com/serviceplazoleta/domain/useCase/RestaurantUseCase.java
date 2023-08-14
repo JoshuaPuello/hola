@@ -7,6 +7,7 @@ import com.serviceplazoleta.domain.spi.IRestaurantPersistencePort;
 import com.serviceplazoleta.domain.spi.feignclient.IUserFeignClientPort;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RestaurantUseCase implements IRestaurantServicePort {
     private final IRestaurantPersistencePort restaurantPersistencePort;
@@ -18,9 +19,9 @@ public class RestaurantUseCase implements IRestaurantServicePort {
     }
 
     @Override
-    public void saveRestaurant(Restaurant restaurant, Long propietarioId) {
-        Restaurant restaurant1 = restaurantPersistencePort.getRestaurantByIdPropietario(propietarioId);
-        if (restaurant1 != null) throw new OwnerMustOnlyOwnARestaurantException();
+    public void saveRestaurant(Restaurant restaurant, Long propietarioId) throws Exception {
+        Optional<Restaurant> optionalRestaurant = restaurantPersistencePort.getRestaurantByIdPropietario(propietarioId);
+        if (optionalRestaurant.isPresent()) throw new OwnerMustOnlyOwnARestaurantException();
         restaurantPersistencePort.saveRestaurant(restaurant);
     }
 
@@ -30,21 +31,26 @@ public class RestaurantUseCase implements IRestaurantServicePort {
     }
 
     @Override
-    public Restaurant getRestaurantByIdProprietor(Long idProprietor) {
-        return restaurantPersistencePort.getRestaurantByIdPropietario(idProprietor);
-    }
-
-    @Override
     public List<Restaurant> getAllRestaurant() {
         return restaurantPersistencePort.getAllRestaurant();
     }
 
     @Override
     public List<Restaurant> getRestaurantsWhithPagination(Integer page, Integer size) {
-        return restaurantPersistencePort.getRestaurantsWhithPagination(page,size);
+        return restaurantPersistencePort.getRestaurantsWithPagination(page,size);
     }
 
     public Boolean validateAccess(Long userId, String requiredRole, String token) {
         return userFeignClientPort.validateUserId(userId, requiredRole, token);
+    }
+
+    @Override
+    public void linkEmployee(Long restaurantId, Long employeeId) {
+        restaurantPersistencePort.linkEmployee(restaurantId, employeeId);
+    }
+
+    @Override
+    public Optional<Restaurant> getRestaurantByIdPropietario(Long idPropietario) {
+        return restaurantPersistencePort.getRestaurantByIdPropietario(idPropietario);
     }
 }

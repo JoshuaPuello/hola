@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class RestaurantHandler implements IRestaurantHandler{
     private final IRestaurantPaginationResponseMapper restaurantPaginationResponseMapper;
 
     @Override
-    public void saveRestaurant(RestaurantRequestDto restaurantRequestDto, Long propietarioId) {
+    public void saveRestaurant(RestaurantRequestDto restaurantRequestDto, Long propietarioId) throws Exception {
         Restaurant restaurant = restaurantRequestMapper.toRestaurant(restaurantRequestDto);
         restaurantServicePort.saveRestaurant(restaurant, propietarioId);
     }
@@ -34,12 +35,6 @@ public class RestaurantHandler implements IRestaurantHandler{
     @Override
     public RestaurantResponseDto getRestaurantById(Long id) {
         RestaurantResponseDto restaurantResponseDto = restaurantResponseMapper.toResponse(restaurantServicePort.getRestaurantById(id));
-        return restaurantResponseDto;
-    }
-
-    @Override
-    public RestaurantResponseDto getRestaurantByIdProprietor(Long idProprietor) {
-        RestaurantResponseDto restaurantResponseDto = restaurantResponseMapper.toResponse(restaurantServicePort.getRestaurantByIdProprietor(idProprietor));
         return restaurantResponseDto;
     }
 
@@ -53,12 +48,22 @@ public class RestaurantHandler implements IRestaurantHandler{
         return restaurantPaginationResponseMapper.toResponseListPagination(restaurantServicePort.getRestaurantsWhithPagination(page,size));
     }
 
-
     @Override
     public void validateAccess(Long userId, String requiredRole, String token) throws Exception {
         Boolean hasValidAccess = restaurantServicePort.validateAccess(userId, requiredRole, token);
         if (!hasValidAccess) {
             throw new Exception("User has no access to this resource.");
         }
+    }
+
+    @Override
+    public void linkEmployee(Long restaurantId, Long employeeId) {
+        restaurantServicePort.linkEmployee(restaurantId, employeeId);
+    }
+
+    @Override
+    public RestaurantResponseDto getRestaurantByIdPropietario(Long idPropietario) throws Exception {
+        Optional<Restaurant> restaurant = restaurantServicePort.getRestaurantByIdPropietario(idPropietario);
+        return restaurant.map(restaurantResponseMapper::toResponse).orElse(null);
     }
 }

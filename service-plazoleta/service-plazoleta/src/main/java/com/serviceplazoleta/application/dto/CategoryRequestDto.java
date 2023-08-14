@@ -9,8 +9,10 @@ import javax.validation.constraints.NotBlank;
 public class CategoryRequestDto {
 
     private Long id;
+
     @NotBlank(message = "El nombre es requerido")
     private String name;
+
     @NotBlank(message = "La descripcion es requerida")
     private String description;
 }

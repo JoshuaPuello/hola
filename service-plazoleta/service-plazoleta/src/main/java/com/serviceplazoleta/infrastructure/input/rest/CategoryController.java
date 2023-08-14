@@ -18,13 +18,15 @@ public class CategoryController {
 
     private final ICategoryHandler categoryHandler;
 
-
     public CategoryController(ICategoryHandler categoryHandler) {
         this.categoryHandler = categoryHandler;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Void> saveCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto, HttpServletRequest request) throws Exception{
+    public ResponseEntity<Void> saveCategory(
+        @Valid @RequestBody CategoryRequestDto categoryRequestDto,
+        HttpServletRequest request
+    ) {
         categoryHandler.saveCategory(categoryRequestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

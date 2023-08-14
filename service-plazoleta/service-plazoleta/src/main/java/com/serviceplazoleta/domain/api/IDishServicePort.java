@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface IDishServicePort {
 
-    void saveDish(Dish dish, Long restaurantId,HttpServletRequest request);
+    void saveDish(Dish dish, Long restaurantId, HttpServletRequest request);
+
     Dish getDishById(Long id);
 
     void updateDish(Long id, Dish dish, Long restaurantId, HttpServletRequest request, Long propietarioId);
@@ -16,7 +17,7 @@ public interface IDishServicePort {
 
     List<Dish> getAllDish();
 
-    List<Dish> findAllByRestaurantId(Long idRestaurant, Integer page,Integer size);
+    List<Dish> findAllByRestaurantId(Long idRestaurant, Integer page, Integer size, String category);
 
     Boolean validateAccess(Long userId, String requiredRole, String token);
 }

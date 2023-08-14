@@ -22,38 +22,50 @@ public class DishRestController {
     public DishRestController(IDishHandler dishHandler) {
         this.dishHandler = dishHandler;
     }
+
     @PostMapping("/save")
-    public ResponseEntity<Void> saveDish(@Valid @RequestBody DishRequestDto dishRequestDto, HttpServletRequest request) throws Exception{
-        Long propietarioId = getUserIdAndValidateAccess(request,"PROPIETARIO");
-        dishHandler.saveDish(dishRequestDto, propietarioId,request);
+    public ResponseEntity<Void> saveDish(@Valid @RequestBody DishRequestDto dishRequestDto, HttpServletRequest request) throws Exception {
+        Long propietarioId = getUserIdAndValidateAccess(request, "PROPIETARIO");
+        dishHandler.saveDish(dishRequestDto, propietarioId, request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<DishRequestDto> updateDish(@PathVariable(value = "id")Long dishId,
-                                                     @RequestBody DishUpdateRequestDto dishUpdateRequestDto,
-                                                     Long restaurantId, HttpServletRequest request,Long propietarioId) throws Exception{
-        propietarioId = getUserIdAndValidateAccess(request,"PROPIETARIO");
-        dishHandler.updateDish(dishId,dishUpdateRequestDto,restaurantId,request, propietarioId);
+    public ResponseEntity<DishRequestDto> updateDish(
+        @PathVariable(value = "id") Long dishId,
+        @RequestBody DishUpdateRequestDto dishUpdateRequestDto,
+        Long restaurantId,
+        HttpServletRequest request
+    ) throws Exception {
+        Long propietarioId = getUserIdAndValidateAccess(request, "PROPIETARIO");
+        dishHandler.updateDish(dishId, dishUpdateRequestDto, restaurantId, request, propietarioId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/{id}/activate/{enableDisable}")
-    public ResponseEntity<DishRequestDto> enableDisable(@PathVariable(value = "id")Long id,@PathVariable(value = "enableDisable")Long enableDisble){
-        dishHandler.enableDisableDish(id,enableDisble);
+    public ResponseEntity<DishRequestDto> enableDisable(@PathVariable(value = "id") Long id, @PathVariable(value = "enableDisable") Long enableDisble) {
+        dishHandler.enableDisableDish(id, enableDisble);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<DishResponseDto>> getAllDishes(){
+    public ResponseEntity<List<DishResponseDto>> getAllDishes() {
         return ResponseEntity.ok(dishHandler.getAllDishes());
     }
-    @GetMapping("/restaurant/{idRestaurant}/page/{page}/size/{size}")
-    public ResponseEntity<List<DishResponseDto>> getAllDishByRestaurant(@PathVariable(value = "idRestaurant")Long idRestaurant, @PathVariable(value = "page")Integer page, @PathVariable(value = "size")Integer size){
-        return ResponseEntity.ok(dishHandler.findAllByRestaurantId(idRestaurant,page,size));
-    }
 
+    /**
+     * Ejemplo de request:
+     * http://localhost:8091/dish/restaurant/4/page/0/size/2?category=Nombre categoria
+     * La categoria es opcional, cuando no se manda ese parametro retorna todos los platos.
+     */
+    @GetMapping("/restaurant/{idRestaurant}/page/{page}/size/{size}")
+    public ResponseEntity<List<DishResponseDto>> getAllDishByRestaurant(
+        @PathVariable(value = "idRestaurant") Long idRestaurant,
+        @PathVariable(value = "page") Integer page,
+        @PathVariable(value = "size") Integer size,
+        @RequestParam(value = "category", required = false) String category) {
+        return ResponseEntity.ok(dishHandler.findAllByRestaurantId(idRestaurant, page, size, category));
+    }
 
     private Long getUserIdAndValidateAccess(HttpServletRequest request, String requiredRole) throws Exception {
         Long userId = Long.valueOf((String) request.getAttribute("userId"));
