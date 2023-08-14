@@ -17,7 +17,7 @@ public class RestaurantFeignAdapter implements IRestaurantFeingClientPort {
 
     @Override
     public Restaurant getRestaurantByIdProprietor(Long idProprietor) {
-        RestaurantResponseDto restaurantResponseDto = restaurantFeignClient.getRestaurantByIdProprietor(idProprietor);
+        RestaurantResponseDto restaurantResponseDto = restaurantFeignClient.getRestaurantByIdPropietario(idProprietor);
         return restaurantResponseMapper.toRestaurant(restaurantResponseDto);
     }
 }

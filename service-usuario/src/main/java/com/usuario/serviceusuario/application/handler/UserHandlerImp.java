@@ -20,15 +20,16 @@ public class UserHandlerImp implements IUserHandler{
     private final IUserRequestMapper userRequestMapper;
     private final IUserResponseMapper userResponseMapper;
     @Override
-    public void saveUser(UserRequestDto userRequestDto) {
+    public User saveUser(UserRequestDto userRequestDto) {
         User user = userRequestMapper.toUser(userRequestDto);
-        userServicePort.saveUser(user);
+        return userServicePort.saveUser(user);
     }
 
     @Override
-    public void saveEmployee(UserRequestDto userRequestDto) {
-        User user = userRequestMapper.toUser(userRequestDto);
-        userServicePort.saveEmployee(user);
+    public User saveEmployee(UserRequestDto userRequestDto) {
+        User user = saveUser(userRequestDto);
+        userServicePort.linkEmployeeToRestaurant(user);
+        return user;
     }
 
     @Override

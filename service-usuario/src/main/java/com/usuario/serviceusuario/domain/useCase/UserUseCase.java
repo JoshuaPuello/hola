@@ -18,43 +18,27 @@ public class UserUseCase implements IUserServicePort {
 
     private final IRestaurantFeignClient restaurantFeignClient;
 
-    private final IEmployeeFeignClientPort employeeFeignClientPort;
     private final PasswordEncoder passwordEncoder;
+
     private final IToken token;
 
-
-
-    public UserUseCase(IUserPersistencePort userPersistencePort, IRestaurantFeignClient restaurantFeignClient, IEmployeeFeignClientPort employeeFeignClientPort, PasswordEncoder passwordEncoder, IToken token) {
+    public UserUseCase(
+        IUserPersistencePort userPersistencePort,
+        IRestaurantFeignClient restaurantFeignClient,
+        PasswordEncoder passwordEncoder,
+        IToken token
+    ) {
         this.userPersistencePort = userPersistencePort;
         this.restaurantFeignClient = restaurantFeignClient;
-        this.employeeFeignClientPort = employeeFeignClientPort;
         this.passwordEncoder = passwordEncoder;
         this.token = token;
     }
 
     @Override
-    public void saveUser(User user) {
-        validateRolesAuthAndNot(user);
+    public User saveUser(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-        userPersistencePort.saveUser(user);
-    }
-
-    @Override
-    public void saveEmployee(User user) {
-        Employee employee = new Employee();
-        String beareToken = token.getBearerToken();
-        Long idOwnerAut = token.getUserAuthenticatedId(beareToken);
-
-        RestaurantResponseDto restaurant = restaurantFeignClient.getRestaurantByIdProprietor(idOwnerAut);
-        String restaurantId = String.valueOf(restaurant.getId());
-        System.out.println(restaurantId);
-        String employeeId = String.valueOf(userPersistencePort.getUserByMail(user.getMail()).getId());
-        System.out.println(employeeId);
-
-        employee.setRestaurantId(restaurantId);
-        employee.setEmployeeId(employeeId);
-        employeeFeignClientPort.saveEmploye(employee);
+        return userPersistencePort.saveUser(user);
     }
 
     @Override
@@ -73,33 +57,12 @@ public class UserUseCase implements IUserServicePort {
         return user.getRole().getName().equals(requiredRole);
     }
 
-    private void validateRolesAuthAndNot(User user) {
+    @Override
+    public void linkEmployeeToRestaurant(User user) {
         String bearerToken = token.getBearerToken();
-        Role role = new Role();
-        String roles = "";
-        if (!(bearerToken == null)) {
+        Long idOwnerAut = token.getUserAuthenticatedId(bearerToken);
 
-            roles = token.getUserAuthenticatedRole(bearerToken);
-            System.out.println(roles);
-        }
-
-        if (roles.equals("PROPIETARIO")) {
-            //Puede crear empleados
-            role.setId(3L);
-        } else if (roles.equals("ADMIN")) {
-            //Puede crear propietarios
-            role.setId(2L);
-        } else {
-            if (user.getRole().getId() == null) {
-                role.setId(4L);
-            } else if (user.getRole().getId() == 1) {
-                //Si entra aqui, se registra un ADMIN
-                System.out.println("Se esta registrando un ADMIN");
-            }
-
-        }
-        if (!(role.getId()==null)){
-            user.setRole(role);
-        }
+        RestaurantResponseDto restaurant = restaurantFeignClient.getRestaurantByIdPropietario(idOwnerAut);
+        restaurantFeignClient.linkEmployeeToRestaurant(restaurant.getId(), user.getId());
     }
 }

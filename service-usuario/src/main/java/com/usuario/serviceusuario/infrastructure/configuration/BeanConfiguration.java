@@ -62,7 +62,7 @@ public class BeanConfiguration {
     }
     @Bean
     public IUserServicePort userServicePort(){
-        return new UserUseCase(userPersistencePort(), restaurantFeignClient, employeeFeignClientPort(), passwordEncoder, token());
+        return new UserUseCase(userPersistencePort(), restaurantFeignClient, passwordEncoder, token());
     }
 
     @Bean

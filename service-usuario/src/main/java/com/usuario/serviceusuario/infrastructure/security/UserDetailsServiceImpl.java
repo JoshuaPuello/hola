@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByMail(mail)
                 .orElseThrow(()-> new UsernameNotFoundException("Usuario no existe"));
-        User user = userEntityMapper.toUserMolde(userEntity);
+        User user = userEntityMapper.toUserModel(userEntity);
 
         return new UserDetailsImpl(user);
     }

@@ -2,12 +2,13 @@ package com.usuario.serviceusuario.application.handler;
 
 import com.usuario.serviceusuario.application.dto.UserRequestDto;
 import com.usuario.serviceusuario.application.dto.UserResponseDto;
+import com.usuario.serviceusuario.domain.model.User;
 
 public interface IUserHandler {
 
-    void saveUser(UserRequestDto userRequestDto);
+    User saveUser(UserRequestDto userRequestDto);
 
-    void saveEmployee(UserRequestDto userRequestDto);
+    User saveEmployee(UserRequestDto userRequestDto);
 
     UserResponseDto getUserById(Long id);
 

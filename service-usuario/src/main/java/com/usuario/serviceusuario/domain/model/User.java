@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class User {
-
     private long id;
     private String name;
     private String lastName;
@@ -18,7 +17,4 @@ public class User {
     private String mail;
     private String password;
     private Role role;
-
-
-
 }

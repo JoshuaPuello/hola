@@ -5,7 +5,6 @@ import com.usuario.serviceusuario.infrastructure.out.jpa.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.control.MappingControl;
 
 @Mapper(componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
@@ -16,5 +15,5 @@ public interface IUserEntityMapper {
     UserEntity toEntity(User user);
 
     @Mapping(target = "role.id",source = "role.id")
-    User toUserMolde(UserEntity userEntity);
+    User toUserModel(UserEntity userEntity);
 }

@@ -1,16 +1,16 @@
 package com.usuario.serviceusuario.domain.api;
 
 import com.usuario.serviceusuario.domain.model.User;
-import com.usuario.serviceusuario.infrastructure.out.jpa.entity.UserEntity;
 
 public interface IUserServicePort {
 
-    void saveUser(User user);
-    void saveEmployee(User user);
+    User saveUser(User user);
 
     User getUserById(Long id);
 
     User getUserByMail(String mail);
 
     Boolean validateUserHasRole(Long userId, String requiredRole) throws Exception;
+
+    void linkEmployeeToRestaurant(User user);
 }

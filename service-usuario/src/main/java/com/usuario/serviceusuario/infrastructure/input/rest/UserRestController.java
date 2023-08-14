@@ -3,6 +3,7 @@ package com.usuario.serviceusuario.infrastructure.input.rest;
 
 import com.usuario.serviceusuario.application.dto.UserRequestDto;
 import com.usuario.serviceusuario.application.handler.IUserHandler;
+import com.usuario.serviceusuario.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class UserRestController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/propietario")
-    public ResponseEntity<Void> savePropietario(@RequestBody UserRequestDto request) {
-        userHandler.saveUser(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<User> savePropietario(@RequestBody UserRequestDto request) {
+        User user = userHandler.saveUser(request);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/validateRole")
@@ -32,15 +33,14 @@ public class UserRestController {
     }
 
     @PostMapping("/employee")
-    public ResponseEntity<Void> saveEmployee(@RequestBody UserRequestDto empleado){
-        userHandler.saveUser(empleado);
-        userHandler.saveEmployee(empleado);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<User> saveEmployee(@RequestBody UserRequestDto employee){
+        User user = userHandler.saveEmployee(employee);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/client")
-    public ResponseEntity<Void> saveClient(@Valid @RequestBody UserRequestDto client){
-        userHandler.saveUser(client);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<User> saveClient(@Valid @RequestBody UserRequestDto client){
+        User user = userHandler.saveUser(client);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }

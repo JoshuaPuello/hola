@@ -13,8 +13,6 @@ import org.mapstruct.control.MappingControl;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IUserRequestMapper {
 
-    @Mapping(target = "role.id",source = "role")
+    @Mapping(target = "role.id", source = "role")
     User toUser(UserRequestDto userRequestDto);
-
-
 }
