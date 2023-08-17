@@ -1,6 +1,5 @@
 package com.serviceplazoleta.application.mapper;
 
-import com.serviceplazoleta.application.dto.OrderRequestDto;
 import com.serviceplazoleta.application.dto.OrderResponseDto;
 import com.serviceplazoleta.domain.model.Order;
 import org.mapstruct.Mapper;

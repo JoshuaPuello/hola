@@ -1,6 +1,6 @@
 package com.serviceplazoleta.infrastructure.input.rest;
 
-import com.serviceplazoleta.application.dto.OrderRequestDto;
+import com.serviceplazoleta.application.dto.ProcessOrderRequestDto;
 import com.serviceplazoleta.application.dto.OrderResponseDto;
 import com.serviceplazoleta.application.handler.IPlazoletaHandler;
 import org.springframework.http.HttpStatus;
@@ -36,9 +36,19 @@ public class PlazoletaController {
 
     @PostMapping("/processOrder")
     public ResponseEntity<OrderResponseDto> processOrder(
-        @Valid @RequestBody OrderRequestDto orderRequestDto
+        @Valid @RequestBody ProcessOrderRequestDto processOrderRequestDto
     ) {
-        OrderResponseDto order = plazoletaHandler.processOrder(orderRequestDto);
+        OrderResponseDto order = plazoletaHandler.processOrder(processOrderRequestDto);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/assignOrder")
+    public ResponseEntity<OrderResponseDto> assignOrder(
+        @RequestParam(value = "orderId") Long orderId,
+        HttpServletRequest request
+    ) {
+        Long employeeId = Long.valueOf((String) request.getAttribute("userId"));
+        OrderResponseDto order = plazoletaHandler.assignOrderToEmployee(employeeId, orderId);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 }
