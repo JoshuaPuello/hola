@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
 
-    List<OrderEntity> findByIdRestaurant(Long idRestaurant, Pageable page);
+    List<OrderEntity> findByIdRestaurantAndStatus(Long idRestaurant, String status, Pageable page);
 }
