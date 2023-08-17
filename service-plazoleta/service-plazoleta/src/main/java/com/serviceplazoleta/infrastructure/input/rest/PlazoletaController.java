@@ -5,12 +5,11 @@ import com.serviceplazoleta.application.dto.OrderResponseDto;
 import com.serviceplazoleta.application.handler.IPlazoletaHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("plazoleta")
@@ -20,6 +19,19 @@ public class PlazoletaController {
 
     public PlazoletaController(IPlazoletaHandler plazoletaHandler) {
         this.plazoletaHandler = plazoletaHandler;
+    }
+
+    @GetMapping("/getOrdersByStatus/page/{page}/size/{size}")
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByStatus(
+        @PathVariable(value = "page") Integer page,
+        @PathVariable(value = "size") Integer size,
+        @RequestParam(value = "status") String status,
+        HttpServletRequest request
+    ) {
+        // Aqui debe validar que el usuario asociado al token sea de rol empleado
+        Long employeeId = Long.valueOf((String) request.getAttribute("userId"));
+        List<OrderResponseDto> ordersByStatus = plazoletaHandler.getOrdersByStatus(employeeId, page, size, status);
+        return new ResponseEntity<>(ordersByStatus, HttpStatus.CREATED);
     }
 
     @PostMapping("/processOrder")

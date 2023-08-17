@@ -7,10 +7,7 @@ import com.serviceplazoleta.domain.api.ICategoryServicePort;
 import com.serviceplazoleta.domain.api.IDishServicePort;
 import com.serviceplazoleta.domain.api.IPlazoletaServicePort;
 import com.serviceplazoleta.domain.api.IRestaurantServicePort;
-import com.serviceplazoleta.domain.spi.ICategoryPersistencePort;
-import com.serviceplazoleta.domain.spi.IDishPersistencePort;
-import com.serviceplazoleta.domain.spi.IOrderPersistencePort;
-import com.serviceplazoleta.domain.spi.IRestaurantPersistencePort;
+import com.serviceplazoleta.domain.spi.*;
 import com.serviceplazoleta.domain.spi.feignclient.IUserFeignClientPort;
 import com.serviceplazoleta.domain.useCase.CategoryUseCase;
 import com.serviceplazoleta.domain.useCase.DishUseCase;
@@ -19,10 +16,7 @@ import com.serviceplazoleta.domain.useCase.RestaurantUseCase;
 import com.serviceplazoleta.infrastructure.out.feignclient.IUserFeignClient;
 import com.serviceplazoleta.infrastructure.out.feignclient.adapter.UserFeignAdapter;
 import com.serviceplazoleta.infrastructure.out.feignclient.mapper.IUserDtoMapper;
-import com.serviceplazoleta.infrastructure.out.jpa.adapter.CategoryJpaAdapter;
-import com.serviceplazoleta.infrastructure.out.jpa.adapter.DishJpaAdapter;
-import com.serviceplazoleta.infrastructure.out.jpa.adapter.OrderJpaAdapter;
-import com.serviceplazoleta.infrastructure.out.jpa.adapter.RestaurantJpaAdapter;
+import com.serviceplazoleta.infrastructure.out.jpa.adapter.*;
 import com.serviceplazoleta.infrastructure.out.jpa.mapper.ICategoryEntityMapper;
 import com.serviceplazoleta.infrastructure.out.jpa.mapper.IDishEntityMapper;
 import com.serviceplazoleta.infrastructure.out.jpa.mapper.IOrderEntityMapper;
@@ -98,6 +92,11 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public IRestaurantEmployeePersistencePort restaurantEmployeePersistencePort() {
+        return new RestaurantEmployeeJpaAdapter(restaurantEmployeeRepository, restaurantRepository, restaurantEntityMapper);
+    }
+
+    @Bean
     public IDishPersistencePort dishPersistencePort() {
         return new DishJpaAdapter(dishRepository, dishEntityMapper);
     }
@@ -109,7 +108,7 @@ public class BeanConfiguration {
 
     @Bean
     public IPlazoletaServicePort plazoletaServicePort() {
-        return new PlazoletaUseCase(orderPersistencePort());
+        return new PlazoletaUseCase(orderPersistencePort(), restaurantEmployeePersistencePort());
     }
 
     @Bean

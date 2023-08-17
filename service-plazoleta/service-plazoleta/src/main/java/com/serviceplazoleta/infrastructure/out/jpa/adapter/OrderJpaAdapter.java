@@ -9,11 +9,10 @@ import com.serviceplazoleta.infrastructure.out.jpa.mapper.IOrderEntityMapper;
 import com.serviceplazoleta.infrastructure.out.jpa.repository.IDishRepository;
 import com.serviceplazoleta.infrastructure.out.jpa.repository.IOrderDishRepository;
 import com.serviceplazoleta.infrastructure.out.jpa.repository.IOrderRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderJpaAdapter implements IOrderPersistencePort {
@@ -52,5 +51,18 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
         orderDishRepository.saveAll(orderDishEntities);
 
         return orderEntityMapper.toOrder(orderEntity, orderDishEntities);
+    }
+
+    @Override
+    public List<Order> findByRestaurantIdAndStatus(Long restaurantId, String status, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<OrderEntity> orderEntities = orderRepository.findByIdRestaurant(restaurantId, pageable);
+        return orderEntities.stream()
+                .filter(order -> order.getStatus().equalsIgnoreCase(status))
+                .map(orderEntity -> {
+                    List<OrderDishEntity> orderDishEntities = orderDishRepository.findByOrderId(orderEntity.getId());
+                    return orderEntityMapper.toOrder(orderEntity, orderDishEntities);
+                })
+                .collect(Collectors.toList());
     }
 }

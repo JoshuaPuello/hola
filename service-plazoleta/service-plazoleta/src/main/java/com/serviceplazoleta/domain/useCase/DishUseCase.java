@@ -2,7 +2,7 @@ package com.serviceplazoleta.domain.useCase;
 
 import com.serviceplazoleta.domain.api.IDishServicePort;
 import com.serviceplazoleta.domain.api.exception.DishNotExistException;
-import com.serviceplazoleta.domain.api.exception.RestaurantNotExistExeception;
+import com.serviceplazoleta.domain.api.exception.RestaurantNotExistException;
 import com.serviceplazoleta.domain.model.Dish;
 import com.serviceplazoleta.domain.spi.IDishPersistencePort;
 import com.serviceplazoleta.domain.spi.IRestaurantPersistencePort;
@@ -22,7 +22,7 @@ public class DishUseCase implements IDishServicePort {
     @Override
     public void saveDish(Dish dish, Long restaurantId, HttpServletRequest request) {
         Dish dish1 = dishPersistencePort.getDishByIdRestaurant(restaurantId);
-        if (dish1 != null) throw new RestaurantNotExistExeception();
+        if (dish1 != null) throw new RestaurantNotExistException();
         Long userId = Long.valueOf((String) request.getAttribute("userId"));
         Long idProprietorRestaurant = restaurantPersistencePort.getRestaurantById(dish.getRestaurant().getId()).getIdProprietor();
 
@@ -42,7 +42,7 @@ public class DishUseCase implements IDishServicePort {
         if (dish1 == null) throw new DishNotExistException();
 
         Dish dish2 = dishPersistencePort.getDishByIdRestaurant(restaurantId);
-        if (dish2 != null) throw new RestaurantNotExistExeception();
+        if (dish2 != null) throw new RestaurantNotExistException();
 
         Long userId = Long.valueOf((String) request.getAttribute("userId"));
         Long idProprietorRestaurant = dish1.getRestaurant().getIdProprietor();

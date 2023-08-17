@@ -53,11 +53,6 @@ public class DishRestController {
         return ResponseEntity.ok(dishHandler.getAllDishes());
     }
 
-    /**
-     * Ejemplo de request:
-     * http://localhost:8091/dish/restaurant/4/page/0/size/2?category=Nombre categoria
-     * La categoria es opcional, cuando no se manda ese parametro retorna todos los platos.
-     */
     @GetMapping("/restaurant/{idRestaurant}/page/{page}/size/{size}")
     public ResponseEntity<List<DishResponseDto>> getAllDishByRestaurant(
         @PathVariable(value = "idRestaurant") Long idRestaurant,
