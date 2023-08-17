@@ -1,9 +1,12 @@
 package com.serviceplazoleta.infrastructure.out.jpa.repository;
 
-import com.serviceplazoleta.infrastructure.out.jpa.entity.CategoryEntity;
 import com.serviceplazoleta.infrastructure.out.jpa.entity.OrderEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
 
+    List<OrderEntity> findByIdRestaurant(Long idRestaurant, Pageable page);
 }

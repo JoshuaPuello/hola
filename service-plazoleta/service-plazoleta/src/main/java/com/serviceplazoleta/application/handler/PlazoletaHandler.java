@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +21,19 @@ public class PlazoletaHandler implements IPlazoletaHandler {
     private final IPlazoletaServicePort plazoletaServicePort;
     private final IPlazoletaRequestMapper plazoletaRequestMapper;
     private final IPlazoletaResponseMapper plazoletaResponseMapper;
+    private final IPlazoletaResponseMapper iPlazoletaResponseMapper;
 
     @Override
     public OrderResponseDto processOrder(OrderRequestDto orderRequestDto) {
         Order order = plazoletaRequestMapper.toOrder(orderRequestDto);
         return plazoletaResponseMapper.toResponse(plazoletaServicePort.processOrder(order));
+    }
+
+    @Override
+    public List<OrderResponseDto> getOrdersByStatus(Long employeeId, Integer page, Integer size, String status) {
+        return plazoletaServicePort.getOrdersByStatus(employeeId, status, page, size)
+                .stream()
+                .map(iPlazoletaResponseMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }
