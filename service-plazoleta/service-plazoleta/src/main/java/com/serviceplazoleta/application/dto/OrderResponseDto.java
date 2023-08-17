@@ -16,4 +16,6 @@ public class OrderResponseDto {
     private Long idRestaurant;
 
     private Long idClient;
+
+    private String status;
 }

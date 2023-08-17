@@ -8,5 +8,7 @@ public interface IPlazoletaServicePort {
 
     Order processOrder(Order order);
 
+    Boolean clientHasPendingOrder(Long clientId);
+
     List<Order> getOrdersByStatus(Long employeeId, String status, Integer page, Integer size);
 }

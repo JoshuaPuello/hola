@@ -1,6 +1,6 @@
 package com.serviceplazoleta.application.handler;
 
-import com.serviceplazoleta.application.dto.OrderRequestDto;
+import com.serviceplazoleta.application.dto.ProcessOrderRequestDto;
 import com.serviceplazoleta.application.dto.OrderResponseDto;
 import com.serviceplazoleta.application.mapper.IPlazoletaRequestMapper;
 import com.serviceplazoleta.application.mapper.IPlazoletaResponseMapper;
@@ -24,8 +24,13 @@ public class PlazoletaHandler implements IPlazoletaHandler {
     private final IPlazoletaResponseMapper iPlazoletaResponseMapper;
 
     @Override
-    public OrderResponseDto processOrder(OrderRequestDto orderRequestDto) {
-        Order order = plazoletaRequestMapper.toOrder(orderRequestDto);
+    public OrderResponseDto processOrder(ProcessOrderRequestDto processOrderRequestDto) {
+        Boolean hasPendingOrder = plazoletaServicePort.clientHasPendingOrder(processOrderRequestDto.getIdClient());
+        if (hasPendingOrder) {
+            // throw exception here and remove return null
+            return null;
+        }
+        Order order = plazoletaRequestMapper.toOrder(processOrderRequestDto);
         return plazoletaResponseMapper.toResponse(plazoletaServicePort.processOrder(order));
     }
 
@@ -35,5 +40,10 @@ public class PlazoletaHandler implements IPlazoletaHandler {
                 .stream()
                 .map(iPlazoletaResponseMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderResponseDto assignOrderToEmployee(Long employeeId, Long orderId) {
+        return null;
     }
 }

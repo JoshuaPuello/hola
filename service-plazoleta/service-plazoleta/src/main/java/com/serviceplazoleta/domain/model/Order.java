@@ -22,4 +22,6 @@ public class Order {
     private Long idRestaurant;
 
     private Long idClient;
+
+    private String status;
 }

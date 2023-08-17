@@ -9,4 +9,6 @@ import java.util.List;
 public interface IOrderRepository extends JpaRepository<OrderEntity, Long> {
 
     List<OrderEntity> findByIdRestaurantAndStatus(Long idRestaurant, String status, Pageable page);
+
+    List<OrderEntity> findByStatusAndIdClient(String status, Long idClient);
 }

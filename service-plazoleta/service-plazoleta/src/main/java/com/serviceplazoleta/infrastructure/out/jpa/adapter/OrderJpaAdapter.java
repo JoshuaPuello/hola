@@ -1,6 +1,7 @@
 package com.serviceplazoleta.infrastructure.out.jpa.adapter;
 
 import com.serviceplazoleta.domain.model.Order;
+import com.serviceplazoleta.domain.model.enums.OrderStatus;
 import com.serviceplazoleta.domain.spi.IOrderPersistencePort;
 import com.serviceplazoleta.infrastructure.out.jpa.entity.DishEntity;
 import com.serviceplazoleta.infrastructure.out.jpa.entity.OrderDishEntity;
@@ -37,7 +38,7 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
     public Order saveOrder(Order order) {
         OrderEntity entity = orderEntityMapper.toEntity(order);
         entity.setDateCreated(new Date());
-        entity.setStatus("Pendiente");
+        entity.setStatus(OrderStatus.PENDIENTE.getStatus());
         OrderEntity orderEntity = orderRepository.save(entity);
 
         List<OrderDishEntity> orderDishEntities = order.getDishesIdByQuantity().entrySet().stream()
@@ -63,5 +64,12 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
                     return orderEntityMapper.toOrder(orderEntity, orderDishEntities);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean hasOrderWithStatusForClientId(String status, Long clientId) {
+        return orderRepository.findByStatusAndIdClient(status, clientId)
+                .stream()
+                .anyMatch(order -> order.getStatus().equalsIgnoreCase(OrderStatus.PENDIENTE.getStatus()));
     }
 }

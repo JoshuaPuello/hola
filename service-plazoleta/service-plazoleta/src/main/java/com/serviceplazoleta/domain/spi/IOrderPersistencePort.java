@@ -9,4 +9,6 @@ public interface IOrderPersistencePort {
     Order saveOrder(Order order);
 
     List<Order> findByRestaurantIdAndStatus(Long restaurantId, String status, Integer page, Integer size);
+
+    Boolean hasOrderWithStatusForClientId(String status, Long clientId);
 }

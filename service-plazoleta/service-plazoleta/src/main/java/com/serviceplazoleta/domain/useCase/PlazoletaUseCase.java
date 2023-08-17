@@ -3,6 +3,7 @@ package com.serviceplazoleta.domain.useCase;
 import com.serviceplazoleta.domain.api.IPlazoletaServicePort;
 import com.serviceplazoleta.domain.model.Order;
 import com.serviceplazoleta.domain.model.Restaurant;
+import com.serviceplazoleta.domain.model.enums.OrderStatus;
 import com.serviceplazoleta.domain.spi.IOrderPersistencePort;
 import com.serviceplazoleta.domain.spi.IRestaurantEmployeePersistencePort;
 
@@ -24,6 +25,11 @@ public class PlazoletaUseCase implements IPlazoletaServicePort {
     @Override
     public Order processOrder(Order order) {
         return orderPersistencePort.saveOrder(order);
+    }
+
+    @Override
+    public Boolean clientHasPendingOrder(Long clientId) {
+        return orderPersistencePort.hasOrderWithStatusForClientId(OrderStatus.PENDIENTE.getStatus(), clientId);
     }
 
     @Override
