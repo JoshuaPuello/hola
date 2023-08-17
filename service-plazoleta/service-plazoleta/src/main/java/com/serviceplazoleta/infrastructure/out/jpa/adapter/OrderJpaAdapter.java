@@ -56,9 +56,8 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
     @Override
     public List<Order> findByRestaurantIdAndStatus(Long restaurantId, String status, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<OrderEntity> orderEntities = orderRepository.findByIdRestaurant(restaurantId, pageable);
+        List<OrderEntity> orderEntities = orderRepository.findByIdRestaurantAndStatus(restaurantId, status, pageable);
         return orderEntities.stream()
-                .filter(order -> order.getStatus().equalsIgnoreCase(status))
                 .map(orderEntity -> {
                     List<OrderDishEntity> orderDishEntities = orderDishRepository.findByOrderId(orderEntity.getId());
                     return orderEntityMapper.toOrder(orderEntity, orderDishEntities);
